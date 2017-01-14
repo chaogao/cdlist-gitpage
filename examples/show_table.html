@@ -1,0 +1,130 @@
+---
+layout: default
+---
+
+<div class="example-page">
+  <div class="example-left-wrap">
+    {% include example.html active="cdlist_table" %}
+  </div>
+
+  <div class="example-main-wrap">
+    <div class="demo-wrap">
+      <div class="demo-desc">
+        设置 isTable: 1 显示为 table 格式，设置 headerRow 回调生成表头
+      </div>
+      <div class="demo-cdlist-wrap" id="cdlist-wrap"></div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-title">示例代码：</div>
+{% highlight javascript linenos %}
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+var cdList = window.cdlist = new CdList({
+  tableClass: 'amap-table',
+
+  // 设置以 table 形式展示
+  isTable: 1,
+
+  getUrl: function (data) {
+    var param = {
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      city: 'beijing',
+      offset: 10
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  headerRow: function () {
+    return '<tr><th>名称</th><th>地址</th><th>图片</th></tr>'
+  },
+
+  rows: function (item) {
+    var html = ['<tr>',
+      '<td class="item-name">' + item.name + '</td>',
+      '<td class="item-address">' + item.address + '</td>',
+      '<td class="img">',
+        '<img src="' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + '">',
+      '</td>',
+    '</tr>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+{% endhighlight %}
+    </div>
+  </div>
+</div>
+
+
+<script>
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+var cdList = window.cdlist = new CdList({
+  tableClass: 'amap-table',
+
+  // 设置以 table 形式展示
+  isTable: 1,
+
+  getUrl: function (data) {
+    var param = {
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      city: 'beijing',
+      offset: 10
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  headerRow: function () {
+    return '<tr><th>名称</th><th>地址</th><th>图片</th></tr>'
+  },
+
+  rows: function (item) {
+    var html = ['<tr>',
+      '<td class="item-name">' + item.name + '</td>',
+      '<td class="item-address">' + item.address + '</td>',
+      '<td class="img">',
+        '<img src="' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + '">',
+      '</td>',
+    '</tr>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+</script>

@@ -1,0 +1,231 @@
+---
+layout: default
+---
+
+<div class="banner">
+  <div class="banner-logo">
+    <i class="iconfont icon-logo"></i> <span class="name">CdList</span>
+  </div>
+
+  <p class="desc">使用<em>99</em>行代码创建复杂的列表应用</p>
+
+  <div class="button-wrap">
+    <a class="btn" href="https://github.com/chaogao/cd-list.js" target="_blank">Github</a>
+    <a class="btn" href="https://chaogao.gitbooks.io/cdlist-book/content/" target="_blank">开发文档</a>
+    <a class="btn" href="/cdlist/examples" target="_blank">全部示例</a>
+  </div>
+</div>
+
+<div class="home">
+  <div class="cdlist-container">
+    <div id="cdlist-wrap"></div>
+  </div>
+
+  <div class="script-wrap">
+{% highlight javascript linenos %}
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化搜索插件
+var search = window.search = new CdList.addons.Search({
+  historyEnable: 1,
+  placeholder: '输入您想查询的内容'
+});
+
+// 初始化分页插件
+var pg = window.pg = new CdList.addons.Pagination({
+  historyEnable: 1,
+  onChange: function () {
+    $('body, html').animate({
+      scrollTop: $('.cdlist-container').offset().top
+    }, 300);
+  },
+  getSetting: function (json) {
+    return {
+      total: parseInt(json.count / 13)
+    }
+  }
+});
+
+// 初始化筛选插件
+var filter = window.filter = new CdList.addons.Filter({
+  historyEnable: 1,
+  line: 1,
+  filters: [
+    {
+      label: '服务类型：',
+      name: 'types',
+      datas: [
+        { name: '不限', value: '' },
+        { name: '餐饮服务', value: '05' },
+        { name: '汽车服务', value: '01' },
+        { name: '购物服务', value: '06' },
+        { name: '医疗服务', value: '09' },
+      ]
+    },
+    {
+      label: '城市编码：',
+      name: 'city',
+      datas: [
+        { name: '北京', value: 'beijing' },
+        { name: '上海', value: 'shanghai' },
+        { name: '深圳', value: 'shenzhen' },
+        { name: '广州', value: 'guangzhou' },
+      ]
+    }
+  ]
+});
+
+// 创建 cdlist 表格应用，整合所有插件
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+  addons: [search, filter, pg],
+
+  getUrl: function (data) {
+    var param = {
+      keywords: data.search,
+      types: data.filter.types,
+      city: data.filter.city,
+      page: data.pagination + 1,
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 13
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+{% endhighlight %}
+  </div>
+</div>
+
+<link rel="stylesheet" href="{{ "/index.css" | prepend:site.baseurl }}" />
+
+<script>
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化搜索插件
+var search = window.search = new CdList.addons.Search({
+  historyEnable: 1,
+  placeholder: '输入您想查询的内容'
+});
+
+// 初始化分页插件
+var pg = window.pg = new CdList.addons.Pagination({
+  historyEnable: 1,
+  onChange: function () {
+    $('body, html').animate({
+      scrollTop: $('.cdlist-container').offset().top
+    }, 300);
+  },
+  getSetting: function (json) {
+    return {
+      total: parseInt(json.count / 13)
+    }
+  }
+});
+
+// 初始化筛选插件
+var filter = window.filter = new CdList.addons.Filter({
+  historyEnable: 1,
+  line: 1,
+  filters: [
+    {
+      label: '服务类型：',
+      name: 'types',
+      datas: [
+        { name: '不限', value: '' },
+        { name: '餐饮服务', value: '05' },
+        { name: '汽车服务', value: '01' },
+        { name: '购物服务', value: '06' },
+        { name: '医疗服务', value: '09' },
+      ]
+    },
+    {
+      label: '城市编码：',
+      name: 'city',
+      datas: [
+        { name: '北京', value: 'beijing' },
+        { name: '上海', value: 'shanghai' },
+        { name: '深圳', value: 'shenzhen' },
+        { name: '广州', value: 'guangzhou' },
+      ]
+    }
+  ]
+});
+
+// 创建 cdlist 表格应用，整合所有插件
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+  addons: [search, filter, pg],
+
+  getUrl: function (data) {
+    var param = {
+      keywords: data.search,
+      types: data.filter.types,
+      city: data.filter.city,
+      page: data.pagination + 1,
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 13
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+</script>

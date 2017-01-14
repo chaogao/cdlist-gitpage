@@ -1,0 +1,154 @@
+---
+layout: default
+---
+
+<div class="example-page">
+  <div class="example-left-wrap">
+    {% include example.html active="pagination_default" %}
+  </div>
+
+  <div class="example-main-wrap">
+    <div class="demo-wrap">
+      <div class="demo-desc">
+        分页改变触发 onChange 事件，可处理其他操作
+      </div>
+      <div class="demo-cdlist-wrap" id="cdlist-wrap"></div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-title">示例代码：</div>
+{% highlight javascript linenos %}
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化分页插件
+var pg = window.pg = new CdList.addons.Pagination({
+  historyEnable: 1,
+  onChange: function () {
+    $('body, html').animate({
+      scrollTop: $('#cdlist-wrap').offset().top - 50
+    }, 300);
+  },
+  getSetting: function (json) {
+    return {
+      total: parseInt(json.count / 13)
+    }
+  }
+});
+
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+
+  addons: [pg],
+
+  getUrl: function (data) {
+    var param = {
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 10,
+      city: 'beijing',
+      keywords: '餐饮'
+    };
+
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+{% endhighlight %}
+    </div>
+  </div>
+</div>
+
+
+<script>
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化分页插件
+var pg = window.pg = new CdList.addons.Pagination({
+  historyEnable: 1,
+  onChange: function () {
+    $('body, html').animate({
+      scrollTop: $('#cdlist-wrap').offset().top - 50
+    }, 300);
+  },
+  getSetting: function (json) {
+    return {
+      total: parseInt(json.count / 13)
+    }
+  }
+});
+
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+
+  addons: [pg],
+
+  getUrl: function (data) {
+    var param = {
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 10,
+      city: 'beijing',
+      keywords: '餐饮'
+    };
+
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+</script>

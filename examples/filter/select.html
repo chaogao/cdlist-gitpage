@@ -1,0 +1,177 @@
+---
+layout: default
+---
+
+<div class="example-page">
+  <div class="example-left-wrap">
+    {% include example.html active="filter_select" %}
+  </div>
+
+  <div class="example-main-wrap">
+    <div class="demo-wrap">
+      <div class="demo-desc">
+        默认展示形式，适合很多筛选项目的 cms 应用
+      </div>
+
+      <div class="demo-cdlist-wrap" id="cdlist-wrap"></div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-title">示例代码：</div>
+{% highlight javascript linenos %}
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化筛选插件
+var filter = window.filter = new CdList.addons.Filter({
+  filters: [
+    {
+      label: '服务类型：',
+      name: 'types',
+      datas: [
+        { name: '不限', value: '' },
+        { name: '餐饮服务', value: '05' },
+        { name: '汽车服务', value: '01' },
+        { name: '购物服务', value: '06' },
+        { name: '医疗服务', value: '09' },
+      ]
+    },
+    {
+      label: '城市编码：',
+      name: 'city',
+      datas: [
+        { name: '北京', value: 'beijing' },
+        { name: '上海', value: 'shanghai' },
+        { name: '深圳', value: 'shenzhen' },
+        { name: '广州', value: 'guangzhou' },
+      ]
+    }
+  ]
+});
+
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+
+  addons: [filter],
+
+  getUrl: function (data) {
+    var param = {
+      types: data.filter.types,
+      city: data.filter.city,
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 10
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+{% endhighlight %}
+    </div>
+  </div>
+</div>
+
+
+<script>
+var DEFAULT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAk1BMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////ROyVeAAAAMHRSTlMA3remQMMv+eu2RzznyrysmJNlRA8G7+TVv7KnooyEelopIxMK4F5JNAH284d0VR38f9wYAAAA2UlEQVQoz52Q6Q6CMBCEC7a2pdy3HIKA99X3fzq3+EMQSIybdLLNl53MLvq5oizRnrPESBt7M0tKgsR1N2e2vyPM5oindci1zlOwlRg1tJ6CSj5QVFhTgKUP4dipC8MvYusgR9PJuF210HY4CAID4vhSwPdce+XW3audcmoyxlLjQKvPeJuA0IPAWDiSekPnHJ7W9osQMTpSrMhJtY47jmkqslbtajXOSZaIry0RwpfI7eOWF0MQWkVPptmOMgA1w/7+cT0MIBvQOM10ricbi3D9Xdy+lBH6p15BIw0F5vgmRQAAAABJRU5ErkJggg==';
+
+// 初始化筛选插件
+var filter = window.filter = new CdList.addons.Filter({
+  filters: [
+    {
+      label: '服务类型：',
+      name: 'types',
+      datas: [
+        { name: '不限', value: '' },
+        { name: '餐饮服务', value: '05' },
+        { name: '汽车服务', value: '01' },
+        { name: '购物服务', value: '06' },
+        { name: '医疗服务', value: '09' },
+      ]
+    },
+    {
+      label: '城市编码：',
+      name: 'city',
+      datas: [
+        { name: '北京', value: 'beijing' },
+        { name: '上海', value: 'shanghai' },
+        { name: '深圳', value: 'shenzhen' },
+        { name: '广州', value: 'guangzhou' },
+      ]
+    }
+  ]
+});
+
+var cdList = window.cdlist = new CdList({
+  ulClass: 'amap-list',
+
+  addons: [filter],
+
+  getUrl: function (data) {
+    var param = {
+      types: data.filter.types,
+      city: data.filter.city,
+      key: '07ade0a9ff77197db45779c727d66ece',
+      extensions: 'all',
+      offset: 10
+    };
+    return 'http://restapi.amap.com/v3/place/text?' + $.param(param);
+  },
+
+  empty: function () {
+    return '<div class="amap-list-empty">抱歉，没有您查找的 POI </div>'
+  },
+
+  getAjaxData: function (url) {
+    return $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    });
+  },
+
+  rows: function (item) {
+    var html = ['<li>',
+      '<div class="img" style="background-image:url(' + (item.photos[0] && (item.photos[0].url + '?operate=merge&w=160&h=150&position=5') || DEFAULT_IMAGE) + ')"/>',
+      '<div class="item-main">',
+        '<div class="item-name">' + item.name + '</div>',
+        '<div class="item-address">详细地址' + item.address + '</div>',
+      '</div>',
+    '</li>'].join('');
+
+    return html;
+  },
+
+  getRowsData: function (json) {
+    return json.pois;
+  }
+}, '#cdlist-wrap');
+
+cdList.getList();
+</script>
